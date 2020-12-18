@@ -4,6 +4,9 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 //this class should be abstract because we are not the one who implement DB Room Do this for us..
 @Database(entities = [Task::class], version = 1, exportSchema = false)
@@ -16,6 +19,20 @@ abstract class ToDoDatabase : RoomDatabase() {
      */
     abstract fun taskDao(): TaskDao
 
+//    class Callback(
+//        private val applicationScope: CoroutineScope
+//    ) : RoomDatabase.Callback() {
+//
+//        override fun onCreate(db: SupportSQLiteDatabase) {
+//            super.onCreate(db)
+//            INSTANCE?.let { database ->
+//                applicationScope.launch {
+//                    var taskDao = database.taskDao()
+//                }
+//            }
+//        }
+//    }
+
     /**
      * we need to have only one instance from the database(Singleton)
      * so make a companion object or create an object class..
@@ -24,7 +41,9 @@ abstract class ToDoDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: ToDoDatabase? = null
 
-        fun getDatabase(context: Context): ToDoDatabase {
+        fun getDatabase(
+            context: Context
+        ): ToDoDatabase {
 
             /**
              * Wrapping the code in synchronized(){}
